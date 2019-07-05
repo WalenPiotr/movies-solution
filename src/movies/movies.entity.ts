@@ -6,6 +6,8 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { Rating } from './ratings/ratings.entity';
+import { Transform, Type } from 'class-transformer';
+import * as moment from 'moment';
 
 @Entity()
 export class Movie extends BaseEntity {
@@ -16,6 +18,8 @@ export class Movie extends BaseEntity {
   Title: string;
 
   @Column()
+  @Type(() => Number)
+  @Transform(value => parseInt(value, 10), { toClassOnly: true })
   Year: number;
 
   @Column()
@@ -73,6 +77,8 @@ export class Movie extends BaseEntity {
   Type: string;
 
   @Column()
+  @Type(() => Date)
+  @Transform(value => moment(value), { toClassOnly: true })
   DVD: Date;
 
   @Column()
