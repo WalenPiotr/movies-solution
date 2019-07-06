@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { OneRequired } from '../lib/validators/oneRequired/oneRequired';
 import { Movie } from './movie.entity';
-import { MoviesService } from './movie.service';
+import { MovieService } from './movie.service';
 
 export class AddMovieDto {
   @OneRequired(['t'])
@@ -45,8 +45,8 @@ export class AddMovieDto {
 export class GetMoviesDto {}
 
 @Controller()
-export class MoviesController {
-  constructor(private readonly appService: MoviesService) {}
+export class MovieController {
+  constructor(private readonly appService: MovieService) {}
 
   @Post()
   addMovie(@Body() addMovieDto: AddMovieDto): Promise<Movie> {

@@ -5,15 +5,12 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
 } from 'typeorm';
-import { Rating } from './rating/rating.entity';
+import { Rating } from '../rating/rating.entity';
 import { Transform, Type } from 'class-transformer';
 import * as moment from 'moment';
+import { Comment } from '../comment/comment.entity';
 
-@Entity()
-export class Movie {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class OMDBMovie {
   @Column()
   Title?: string;
 
@@ -92,4 +89,13 @@ export class Movie {
 
   @Column()
   Response: boolean;
+}
+
+@Entity()
+export class Movie extends OMDBMovie {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(type => Comment, comment => comment.movie)
+  comments: Comment;
 }

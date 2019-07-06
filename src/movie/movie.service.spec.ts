@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConfigService } from '../config/config.service';
-import { AddMovieDto, MoviesController } from './movie.controller';
+import { AddMovieDto, MovieController } from './movie.controller';
 import { Movie } from './movie.entity';
-import { MoviesService } from './movie.service';
+import { MovieService } from './movie.service';
 import { Repository, DeepPartial } from 'typeorm';
 
 export type MockType<T> = { [P in keyof T]: jest.Mock<{}> };
@@ -16,14 +16,14 @@ export const repositoryMockFactory = jest.fn(() => ({
 }));
 
 describe('MoviesController', () => {
-  let service: MoviesService;
+  let service: MovieService;
   let repositoryMock: MockType<Repository<Movie>>;
   let testModule: TestingModule;
 
   beforeAll(async () => {
     testModule = await Test.createTestingModule({
       providers: [
-        MoviesService,
+        MovieService,
         // Provide your mock instead of the actual repository
         {
           provide: getRepositoryToken(Movie),
@@ -38,7 +38,7 @@ describe('MoviesController', () => {
   });
 
   beforeEach(async () => {
-    service = testModule.get<MoviesService>(MoviesService);
+    service = testModule.get<MovieService>(MovieService);
     repositoryMock = testModule.get(getRepositoryToken(Movie));
   });
 

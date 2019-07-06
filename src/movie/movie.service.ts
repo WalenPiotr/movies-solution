@@ -1,31 +1,18 @@
-import { Body, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import {
-  IsIn,
-  IsInt,
-  IsOptional,
-  IsPositive,
-  validate,
-  ValidateIf,
-  IsString,
-  MinLength,
-  ValidationOptions,
-  registerDecorator,
-  ValidationArguments,
-} from 'class-validator';
+import { validate } from 'class-validator';
 import fetch from 'node-fetch';
 import * as queryjoin from 'query-string';
 import { Repository } from 'typeorm';
 import * as urljoin from 'url-join';
 import { ConfigService } from '../config/config.service';
 import { OMDB_API_URL } from '../constants';
-import { Movie } from './movie.entity';
-import { OneRequired } from '../lib/validators/oneRequired/oneRequired';
 import { AddMovieDto, GetMoviesDto } from './movie.controller';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Movie, OMDBMovie } from './movie.entity';
 
 @Injectable()
-export class MoviesService {
+export class MovieService {
   private apiKey: string;
   private readonly movieRepository: Repository<Movie>;
   constructor(
@@ -46,9 +33,9 @@ export class MoviesService {
       });
     const res = await fetch(urljoin(OMDB_API_URL, queryString));
     const data = await res.json();
-    const movie = plainToClass(Movie, data);
-    const result = await this.movieRepository.save(movie);
-    const errors = await validate(movie);
+    const omdbMovie = plainToClass(OMDBMovie, data);
+    const result = await this.movieRepository.save(omdbMovie);
+    const errors = await validate(omdbMovie);
     if (errors.length > 0) {
       throw errors;
     }
