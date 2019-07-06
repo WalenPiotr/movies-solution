@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
 } from 'typeorm';
-import { Movie } from '../movies.entity';
+import { Movie } from '../movie.entity';
 
 @Entity()
 export class Rating extends BaseEntity {

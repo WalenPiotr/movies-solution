@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
 } from 'typeorm';
-import { Rating } from './ratings/ratings.entity';
+import { Rating } from './rating/rating.entity';
 import { Transform, Type } from 'class-transformer';
 import * as moment from 'moment';
 
