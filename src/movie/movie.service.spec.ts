@@ -31,7 +31,7 @@ describe('MoviesController', () => {
         },
         {
           provide: ConfigService,
-          useValue: new ConfigService(`.env`),
+          useValue: new ConfigService(),
         },
       ],
     }).compile();

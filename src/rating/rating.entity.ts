@@ -9,6 +9,9 @@ import { Movie } from '../movie/movie.entity';
 
 @Entity()
 export class Rating extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column()
   source: string;
 

@@ -33,7 +33,7 @@ export class AddCommentDto {
 
 export class GetCommentsDto {}
 
-@Controller()
+@Controller('comment')
 export class CommentController {
   constructor(private readonly appService: CommentService) {}
 

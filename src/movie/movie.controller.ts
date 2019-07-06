@@ -44,7 +44,7 @@ export class AddMovieDto {
 
 export class GetMoviesDto {}
 
-@Controller()
+@Controller('movies')
 export class MovieController {
   constructor(private readonly appService: MovieService) {}
 
