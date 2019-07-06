@@ -20,34 +20,10 @@ import * as urljoin from 'url-join';
 import { ConfigService } from '../config/config.service';
 import { OMDB_API_URL } from '../constants';
 import { Movie } from './movie.entity';
-
-export function OneRequired(
-  property: string,
-  validationOptions?: ValidationOptions,
-) {
-  return function(object: Object, propertyName: string) {
-    registerDecorator({
-      name: 'isLongerThan',
-      target: object.constructor,
-      propertyName: propertyName,
-      constraints: [property],
-      options: validationOptions,
-      validator: {
-        validate(value: any, args: ValidationArguments) {
-          const [relatedPropertyName] = args.constraints;
-          const relatedValue = (args.object as any)[relatedPropertyName];
-          return (
-            (value === undefined && relatedValue !== undefined) ||
-            (value !== undefined && relatedValue === undefined)
-          );
-        },
-      },
-    });
-  };
-}
+import { OneRequired } from '../lib/validators/oneRequired/oneRequired';
 
 class AddMovieDto {
-  @OneRequired('t')
+  @OneRequired(['t'])
   @IsString()
   @MinLength(1)
   i?: string;
