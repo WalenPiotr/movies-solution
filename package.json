@@ -29,10 +29,12 @@
     "dotenv": "^8.0.0",
     "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
+    "query-string": "^6.8.1",
     "reflect-metadata": "0.1.13",
     "rimraf": "2.6.3",
     "rxjs": "6.4.0",
-    "typeorm": "^0.2.18"
+    "typeorm": "^0.2.18",
+    "url-join": "^4.0.1"
   },
   "devDependencies": {
     "@nestjs/testing": "6.1.1",
