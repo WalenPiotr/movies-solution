@@ -1,18 +1,35 @@
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
-import { IsNotEmpty, validateSync } from 'class-validator';
-import { plainToClass } from 'class-transformer';
+import { IsNotEmpty, validateSync, IsInt } from 'class-validator';
+import { plainToClass, Transform } from 'class-transformer';
 
 export class EnvConfig {
   @IsNotEmpty()
   API_KEY: string;
+
+  @IsNotEmpty()
+  DB_HOST: string;
+
+  @IsNotEmpty()
+  DB_USERNAME: string;
+
+  @IsNotEmpty()
+  DB_PASSWORD: string;
+
+  @IsNotEmpty()
+  DB_DATABASE: string;
+
+  @IsInt()
+  @Transform(value => parseInt(value, 10), { toClassOnly: true })
+  DB_PORT: number;
 }
 
 export class ConfigService {
   private readonly envConfig: EnvConfig;
 
-  constructor(filePath: string) {
-    const parsedConfig = dotenv.parse(fs.readFileSync(filePath));
+  constructor() {
+    const filepath = `service.env`;
+    const parsedConfig = dotenv.parse(fs.readFileSync(filepath));
     this.envConfig = this.validate(parsedConfig);
   }
 
@@ -27,5 +44,9 @@ export class ConfigService {
 
   get apiKey(): string {
     return this.envConfig.API_KEY;
+  }
+
+  get envs(): EnvConfig {
+    return this.envConfig;
   }
 }
