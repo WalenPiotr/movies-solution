@@ -10,17 +10,17 @@ import { Transform, Type } from 'class-transformer';
 import * as moment from 'moment';
 
 @Entity()
-export class Movie extends BaseEntity {
+export class Movie {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  Title: string;
+  Title?: string;
 
   @Column()
   @Type(() => Number)
   @Transform(value => parseInt(value, 10), { toClassOnly: true })
-  Year: number;
+  Year?: number;
 
   @Column()
   Rated: string;

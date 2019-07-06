@@ -21,62 +21,41 @@ import { ConfigService } from '../config/config.service';
 import { OMDB_API_URL } from '../constants';
 import { Movie } from './movie.entity';
 import { OneRequired } from '../lib/validators/oneRequired/oneRequired';
-
-class AddMovieDto {
-  @OneRequired(['t'])
-  @IsString()
-  @MinLength(1)
-  i?: string;
-
-  @IsString()
-  @MinLength(1)
-  t?: string;
-
-  @IsOptional()
-  @IsIn(['movie', 'series', 'episode'])
-  type?: string;
-
-  @IsOptional()
-  @IsInt()
-  @IsPositive()
-  y?: number;
-
-  @IsOptional()
-  @IsIn(['full', 'short'])
-  plot?: string;
-
-  @IsOptional()
-  @IsIn(['json', 'xml'])
-  r?: string;
-
-  @IsOptional()
-  v?: number;
-}
+import { AddMovieDto, GetMoviesDto } from './movie.controller';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MoviesService {
   private apiKey: string;
   private readonly movieRepository: Repository<Movie>;
   constructor(
-    @Inject('MOVIE_REPOSITORY')
+    @InjectRepository(Movie)
     movieRepository: Repository<Movie>,
     config: ConfigService,
   ) {
     this.apiKey = config.apiKey;
     this.movieRepository = movieRepository;
   }
-  async addMovie(@Body() addMovieDto: AddMovieDto): Promise<Movie> {
-    const queryString = queryjoin.stringify({
-      apikey: this.apiKey,
-      i: 'tt3896198',
-    });
+
+  async addMovie(addMovieDto: AddMovieDto): Promise<Movie> {
+    const queryString =
+      '?' +
+      queryjoin.stringify({
+        apikey: this.apiKey,
+        ...addMovieDto,
+      });
     const res = await fetch(urljoin(OMDB_API_URL, queryString));
     const data = await res.json();
     const movie = plainToClass(Movie, data);
+    const result = await this.movieRepository.save(movie);
     const errors = await validate(movie);
     if (errors.length > 0) {
       throw errors;
     }
-    return movie;
+    return result;
+  }
+
+  async getMovies(getMoviesDto: GetMoviesDto): Promise<Movie[]> {
+    return this.movieRepository.find({});
   }
 }
