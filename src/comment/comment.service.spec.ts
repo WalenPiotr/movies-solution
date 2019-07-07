@@ -71,7 +71,7 @@ describe('CommentController - unit tests', () => {
         },
       ];
       repositoryMock.find.mockReturnValue(expected);
-      const value = await service.addComment(input);
+      const value = await service.getComments(input);
       expect(value).toBe(expected);
     });
   });
