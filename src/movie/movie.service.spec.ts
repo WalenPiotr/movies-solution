@@ -1,21 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { ConfigService } from '../config/config.service';
-import { AddMovieDto, MovieController } from './movie.controller';
+import { MockType } from '../lib/mocks/MockType';
+import { repositoryMockFactory } from '../lib/mocks/repository';
 import { Movie } from './movie.entity';
 import { MovieService } from './movie.service';
-import { Repository, DeepPartial } from 'typeorm';
+import { AddMovieDto } from './dto/add-movie.dto';
 
-export type MockType<T> = { [P in keyof T]: jest.Mock<{}> };
-
-export const repositoryMockFactory = jest.fn(() => ({
-  findOne: jest.fn(entity => entity),
-  save: jest.fn(entity => entity),
-  create: jest.fn(entity => entity),
-  find: jest.fn(entity => entity),
-}));
-
-describe('MoviesController', () => {
+describe('MovieController - unit tests', () => {
   let service: MovieService;
   let repositoryMock: MockType<Repository<Movie>>;
   let testModule: TestingModule;
@@ -24,7 +17,6 @@ describe('MoviesController', () => {
     testModule = await Test.createTestingModule({
       providers: [
         MovieService,
-        // Provide your mock instead of the actual repository
         {
           provide: getRepositoryToken(Movie),
           useFactory: repositoryMockFactory,
@@ -43,7 +35,7 @@ describe('MoviesController', () => {
   });
 
   describe('addMovie', () => {
-    it('other movie details should be fetched and saved to application database.', async () => {
+    it('should fetch other movie details and save to application database.', async () => {
       const input: AddMovieDto = {
         i: 'tt0848228',
       };

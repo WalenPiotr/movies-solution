@@ -8,8 +8,9 @@ import { Repository } from 'typeorm';
 import * as urljoin from 'url-join';
 import { ConfigService } from '../config/config.service';
 import { OMDB_API_URL } from '../constants';
-import { AddMovieDto, GetMoviesDto } from './movie.controller';
 import { Movie, OMDBMovie } from './movie.entity';
+import { AddMovieDto } from './dto/add-movie.dto';
+import { GetMoviesDto } from './dto/get-movies.dto';
 
 @Injectable()
 export class MovieService {
@@ -24,12 +25,12 @@ export class MovieService {
     this.movieRepository = movieRepository;
   }
 
-  async addMovie(addMovieDto: AddMovieDto): Promise<Movie> {
+  async addMovie(args: AddMovieDto): Promise<Movie> {
     const queryString =
       '?' +
       queryjoin.stringify({
         apikey: this.apiKey,
-        ...addMovieDto,
+        ...args,
       });
     const res = await fetch(urljoin(OMDB_API_URL, queryString));
     const data = await res.json();
@@ -42,7 +43,7 @@ export class MovieService {
     return result;
   }
 
-  async getMovies(getMoviesDto: GetMoviesDto): Promise<Movie[]> {
+  async getMovies(args: GetMoviesDto): Promise<Movie[]> {
     return this.movieRepository.find({});
   }
 }

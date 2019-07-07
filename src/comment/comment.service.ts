@@ -1,31 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ConfigService } from '../config/config.service';
-import { AddCommentDto, GetCommentsDto } from './comment.controller';
 import { Comment } from './comment.entity';
+import { AddCommentDto } from './dto/add-comment.dto';
+import { GetCommentsDto } from './dto/get-comments.dto';
 
 @Injectable()
 export class CommentService {
-  private apiKey: string;
   private readonly commentRepository: Repository<Comment>;
   constructor(
     @InjectRepository(Comment)
     commentRepository: Repository<Comment>,
-    config: ConfigService,
   ) {
-    this.apiKey = config.apiKey;
     this.commentRepository = commentRepository;
   }
 
-  async addComment(addCommentDto: AddCommentDto): Promise<Comment> {
+  async addComment(args: AddCommentDto): Promise<Comment> {
     return this.commentRepository.create({
-      ...addCommentDto.comment,
-      movie: { id: addCommentDto.movieId },
+      ...args.comment,
+      movie: { id: args.movieId },
     });
   }
 
-  async getComments(getMoviesDto: GetCommentsDto): Promise<Comment[]> {
+  async getComments(args: GetCommentsDto): Promise<Comment[]> {
     return this.commentRepository.find({});
   }
 }
