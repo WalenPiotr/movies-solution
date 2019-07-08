@@ -4,10 +4,12 @@ import { MovieService } from './movie.service';
 import { ConfigModule } from '../config/config.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Movie } from './movie.entity';
+import { Rating } from 'src/rating/rating.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Movie]),
+    TypeOrmModule.forFeature([Rating]),
     ConfigModule,
     HttpModule.register({
       timeout: 5000,

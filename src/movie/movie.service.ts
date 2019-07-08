@@ -12,20 +12,25 @@ import { Movie, OMDBMovie, OMDBPayload, OMDBError } from './movie.entity';
 import { AddMovieDto } from './dto/add-movie.dto';
 import { GetMoviesDto } from './dto/get-movies.dto';
 import { PaginationDto } from '../lib/pagination/pagination.dto';
+import { Rating } from 'src/rating/rating.entity';
 
 @Injectable()
 export class MovieService {
   private readonly apiKey: string;
   private readonly movieRepository: Repository<Movie>;
+  private readonly ratingRepository: Repository<Rating>;
   private readonly httpService: HttpService;
 
   constructor(
     @InjectRepository(Movie)
     movieRepository: Repository<Movie>,
+    @InjectRepository(Rating)
+    ratingRepository: Repository<Rating>,
     config: ConfigService,
     httpService: HttpService,
   ) {
     this.apiKey = config.apiKey;
+    this.ratingRepository = ratingRepository;
     this.movieRepository = movieRepository;
     this.httpService = httpService;
   }
@@ -47,12 +52,20 @@ export class MovieService {
     const { data } = response;
     if (data.Response && !data.Error) {
       const omdbMovie = plainToClass(OMDBMovie, data as OMDBMovie);
-      const result = await this.movieRepository.save(omdbMovie);
       const omdbErrors = await validate(omdbMovie);
       if (omdbErrors.length > 0) {
         throw omdbErrors;
       }
-      return result;
+      console.log(await this.ratingRepository.find({}));
+      console.log(await this.movieRepository.find({}));
+
+      const newRatings = this.ratingRepository.create(omdbMovie.Ratings);
+      const ratings = await this.ratingRepository.save(newRatings);
+      const newMovie = this.movieRepository.create(omdbMovie);
+      newMovie.Ratings = ratings;
+      console.log(newMovie);
+      const result = await this.movieRepository.save(newMovie);
+      return { ...result };
     } else {
       if (data.Error) {
         throw new Error(data.Error);
@@ -68,10 +81,11 @@ export class MovieService {
       throw argsErrors;
     }
     const pagination = args.pagination ? args.pagination : new PaginationDto();
-    return this.movieRepository.find({
+    const result = await this.movieRepository.find({
       take: pagination.take,
       skip: pagination.skip,
       order: { id: 'ASC' },
     });
+    return result;
   }
 }

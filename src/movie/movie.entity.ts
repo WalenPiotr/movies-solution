@@ -1,15 +1,8 @@
-import {
-  BaseEntity,
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-} from 'typeorm';
-import { Rating } from '../rating/rating.entity';
 import { Transform, Type } from 'class-transformer';
 import * as moment from 'moment';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Comment } from '../comment/comment.entity';
-import { ValidateNested } from 'class-validator';
+import { Rating } from '../rating/rating.entity';
 
 class ResponsePartial {
   @Transform(value => Boolean(value), { toClassOnly: true })
@@ -26,72 +19,76 @@ export class OMDBMovie extends ResponsePartial {
   Year?: number;
 
   @Column()
-  Rated: string;
+  Rated?: string;
 
   @Column()
-  Released: string;
+  Released?: string;
 
   @Column()
-  Runtime: string;
+  Runtime?: string;
 
   @Column()
-  Genre: string;
+  Genre?: string;
 
   @Column()
-  Director: string;
+  Director?: string;
 
   @Column()
-  Writer: string;
+  Writer?: string;
 
   @Column()
-  Actors: string;
+  Actors?: string;
 
   @Column()
-  Plot: string;
+  Plot?: string;
 
   @Column()
-  Language: string;
+  Language?: string;
 
   @Column()
-  Country: string;
+  Country?: string;
 
   @Column()
-  Awards: string;
+  Awards?: string;
 
   @Column()
-  Poster: string;
+  Poster?: string;
 
-  @ManyToOne(type => Rating, rating => rating.movie)
-  Ratings: Rating[];
+  @OneToMany(type => Rating, rating => rating.movie)
+  Ratings?: Rating[];
 
-  @Column()
-  Metascore: number;
+  @Column({ type: 'float' })
+  @Type(() => Number)
+  @Transform(value => parseFloat(value), { toClassOnly: true })
+  Metascore?: number;
 
-  @Column()
-  imdbRating: number;
-
-  @Column()
-  imdbVotes: number;
-
-  @Column()
-  imdbID: string;
+  @Column({ type: 'float' })
+  @Type(() => Number)
+  @Transform(value => parseFloat(value), { toClassOnly: true })
+  imdbRating?: number;
 
   @Column()
-  Type: string;
+  imdbVotes?: string;
+
+  @Column()
+  imdbID?: string;
+
+  @Column()
+  Type?: string;
 
   @Column()
   @Type(() => Date)
   @Transform(value => moment(value), { toClassOnly: true })
-  DVD: Date;
+  DVD?: Date;
 
   @Column()
-  BoxOffice: string;
+  BoxOffice?: string;
 
   @Column()
-  Production: string;
+  Production?: string;
 
   @Column()
-  Website: string;
+  Website?: string;
 }
 
 export class OMDBError extends ResponsePartial {
@@ -105,6 +102,6 @@ export class Movie extends OMDBMovie {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(type => Comment, comment => comment.movie)
-  comments: Comment;
+  @OneToMany(type => Comment, comment => comment.movie)
+  comments?: Comment[];
 }

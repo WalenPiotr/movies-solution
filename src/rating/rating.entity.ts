@@ -13,11 +13,11 @@ export class Rating extends BaseEntity {
   id: number;
 
   @Column()
-  source: string;
+  Source?: string;
 
   @Column()
-  value: string;
+  Value?: string;
 
   @ManyToOne(type => Movie, movie => movie.Ratings)
-  movie: Movie;
+  movie?: Movie;
 }

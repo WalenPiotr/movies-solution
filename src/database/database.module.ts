@@ -13,6 +13,7 @@ function DatabaseOrmModule(): DynamicModule {
     password: envs.DB_PASSWORD,
     database: envs.DB_DATABASE,
     synchronize: true,
+    logging: true,
     entities: ['src/**/**.entity{.ts,.js}'],
   });
 }
