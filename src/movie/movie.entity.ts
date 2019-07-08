@@ -9,8 +9,14 @@ import { Rating } from '../rating/rating.entity';
 import { Transform, Type } from 'class-transformer';
 import * as moment from 'moment';
 import { Comment } from '../comment/comment.entity';
+import { ValidateNested } from 'class-validator';
 
-export class OMDBMovie {
+class ResponsePartial {
+  @Transform(value => Boolean(value), { toClassOnly: true })
+  Response: boolean;
+}
+
+export class OMDBMovie extends ResponsePartial {
   @Column()
   Title?: string;
 
@@ -68,7 +74,7 @@ export class OMDBMovie {
   imdbVotes: number;
 
   @Column()
-  imbdID: string;
+  imdbID: string;
 
   @Column()
   Type: string;
@@ -86,10 +92,13 @@ export class OMDBMovie {
 
   @Column()
   Website: string;
-
-  @Column()
-  Response: boolean;
 }
+
+export class OMDBError extends ResponsePartial {
+  Error: string;
+}
+
+export type OMDBPayload = Partial<OMDBError> & Partial<OMDBMovie>;
 
 @Entity()
 export class Movie extends OMDBMovie {

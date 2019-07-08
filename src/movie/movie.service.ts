@@ -1,49 +1,77 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpService } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
+import { validate, Validate, ValidateIf } from 'class-validator';
 import fetch from 'node-fetch';
 import * as queryjoin from 'query-string';
 import { Repository } from 'typeorm';
 import * as urljoin from 'url-join';
 import { ConfigService } from '../config/config.service';
 import { OMDB_API_URL } from '../constants';
-import { Movie, OMDBMovie } from './movie.entity';
+import { Movie, OMDBMovie, OMDBPayload, OMDBError } from './movie.entity';
 import { AddMovieDto } from './dto/add-movie.dto';
 import { GetMoviesDto } from './dto/get-movies.dto';
+import { PaginationDto } from '../lib/pagination/pagination.dto';
 
 @Injectable()
 export class MovieService {
-  private apiKey: string;
+  private readonly apiKey: string;
   private readonly movieRepository: Repository<Movie>;
+  private readonly httpService: HttpService;
+
   constructor(
     @InjectRepository(Movie)
     movieRepository: Repository<Movie>,
     config: ConfigService,
+    httpService: HttpService,
   ) {
     this.apiKey = config.apiKey;
     this.movieRepository = movieRepository;
+    this.httpService = httpService;
   }
 
   async addMovie(args: AddMovieDto): Promise<Movie> {
+    // console.log(this.httpService);
+    const argsErrors = await validate(plainToClass(AddMovieDto, args));
+    if (argsErrors.length > 0) {
+      throw argsErrors;
+    }
     const queryString =
       '?' +
       queryjoin.stringify({
         apikey: this.apiKey,
-        ...args,
+        ...args.omdbOptions,
       });
-    const res = await fetch(urljoin(OMDB_API_URL, queryString));
-    const data = await res.json();
-    const omdbMovie = plainToClass(OMDBMovie, data);
-    const result = await this.movieRepository.save(omdbMovie);
-    const errors = await validate(omdbMovie);
-    if (errors.length > 0) {
-      throw errors;
+    const url = urljoin(OMDB_API_URL, queryString);
+    const response = await this.httpService.get<OMDBPayload>(url).toPromise();
+    const { data } = response;
+    if (data.Response && !data.Error) {
+      const omdbMovie = plainToClass(OMDBMovie, data as OMDBMovie);
+      const result = await this.movieRepository.save(omdbMovie);
+      const omdbErrors = await validate(omdbMovie);
+      if (omdbErrors.length > 0) {
+        throw omdbErrors;
+      }
+      return result;
+    } else {
+      if (data.Error) {
+        throw new Error(data.Error);
+      } else {
+        throw new Error('Something went wrong');
+      }
     }
-    return result;
   }
 
   async getMovies(args: GetMoviesDto): Promise<Movie[]> {
-    return this.movieRepository.find({});
+    const argsErrors = await validate(plainToClass(GetMoviesDto, args));
+    if (argsErrors.length > 0) {
+      throw argsErrors;
+    }
+    const pagination = args.pagination ? args.pagination : new PaginationDto();
+    return this.movieRepository.find({
+      take: pagination.take,
+      skip: pagination.skip,
+      order: { id: 'ASC' },
+    });
   }
 }

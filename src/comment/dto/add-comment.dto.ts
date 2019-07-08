@@ -1,5 +1,6 @@
 import { IsInt, MaxLength, MinLength, ValidateNested } from 'class-validator';
 import { Comment } from '../comment.entity';
+import { Type } from 'class-transformer';
 
 class CommentDto implements Partial<Comment> {
   @MinLength(5)
@@ -16,5 +17,6 @@ export class AddCommentDto {
   movieId: number;
 
   @ValidateNested()
+  @Type(() => CommentDto)
   comment: CommentDto;
 }

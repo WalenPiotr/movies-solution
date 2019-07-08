@@ -56,13 +56,7 @@ describe('CommentController - unit tests', () => {
 
   describe('getComments', () => {
     it('should fetch comments list', async () => {
-      const input: AddCommentDto = {
-        movieId: 1,
-        comment: {
-          title: 'nice title',
-          text: 'not very long text but ok',
-        },
-      };
+      const input = {};
       const expected: DeepPartial<Comment>[] = [
         {
           movie: { id: 1 },
