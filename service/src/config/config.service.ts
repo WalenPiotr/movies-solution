@@ -28,12 +28,18 @@ export class ConfigService {
   private readonly envConfig: EnvConfig;
 
   constructor() {
-    const filepath = `service.env`;
-    const parsedConfig = dotenv.parse(fs.readFileSync(filepath));
-    this.envConfig = this.validate(parsedConfig);
+    if (process.env.NODE_ENV === 'production') {
+      this.envConfig = this.validate(process.env);
+    } else {
+      const filepath = `development.env`;
+      const parsedConfig = dotenv.parse(fs.readFileSync(filepath));
+      this.envConfig = this.validate(parsedConfig);
+    }
   }
 
-  private validate(parsedConfig: dotenv.DotenvParseOutput): EnvConfig {
+  private validate(
+    parsedConfig: dotenv.DotenvParseOutput | dotenv.DotenvConfigOutput,
+  ): EnvConfig {
     const config = plainToClass(EnvConfig, parsedConfig);
     const errors = validateSync(config);
     if (errors.length > 0) {

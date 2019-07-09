@@ -4,7 +4,7 @@ import { MovieService } from './movie.service';
 import { ConfigModule } from '../config/config.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Movie } from './movie.entity';
-import { Rating } from 'src/rating/rating.entity';
+import { Rating } from '../rating/rating.entity';
 
 @Module({
   imports: [

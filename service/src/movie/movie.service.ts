@@ -12,7 +12,7 @@ import { Movie, OMDBMovie, OMDBPayload, OMDBError } from './movie.entity';
 import { AddMovieDto } from './dto/add-movie.dto';
 import { GetMoviesDto } from './dto/get-movies.dto';
 import { PaginationDto } from '../lib/pagination/pagination.dto';
-import { Rating } from 'src/rating/rating.entity';
+import { Rating } from '../rating/rating.entity';
 
 @Injectable()
 export class MovieService {
@@ -56,14 +56,10 @@ export class MovieService {
       if (omdbErrors.length > 0) {
         throw omdbErrors;
       }
-      console.log(await this.ratingRepository.find({}));
-      console.log(await this.movieRepository.find({}));
-
       const newRatings = this.ratingRepository.create(omdbMovie.Ratings);
       const ratings = await this.ratingRepository.save(newRatings);
       const newMovie = this.movieRepository.create(omdbMovie);
       newMovie.Ratings = ratings;
-      console.log(newMovie);
       const result = await this.movieRepository.save(newMovie);
       return { ...result };
     } else {
@@ -86,6 +82,7 @@ export class MovieService {
       skip: pagination.skip,
       order: { id: 'ASC' },
     });
+    console.log(result);
     return result;
   }
 }

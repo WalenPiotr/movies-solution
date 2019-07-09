@@ -1,0 +1,9 @@
+# ENV
+*.env
+
+# DB-DATA
+.data
+
+node_modules
+dist
+docker-compose.yml
