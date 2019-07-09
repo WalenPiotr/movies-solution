@@ -13,6 +13,7 @@ import { AddMovieDto } from './dto/add-movie.dto';
 import { GetMoviesDto } from './dto/get-movies.dto';
 import { PaginationDto } from '../lib/pagination/pagination.dto';
 import { Rating } from '../rating/rating.entity';
+import { APIError } from '../errors/APIError';
 
 @Injectable()
 export class MovieService {
@@ -36,7 +37,6 @@ export class MovieService {
   }
 
   async addMovie(args: AddMovieDto): Promise<Movie> {
-    // console.log(this.httpService);
     const argsErrors = await validate(plainToClass(AddMovieDto, args));
     if (argsErrors.length > 0) {
       throw argsErrors;
@@ -60,11 +60,10 @@ export class MovieService {
       const ratings = await this.ratingRepository.save(newRatings);
       const newMovie = this.movieRepository.create(omdbMovie);
       newMovie.Ratings = ratings;
-      const result = await this.movieRepository.save(newMovie);
-      return { ...result };
+      return await this.movieRepository.save(newMovie);
     } else {
       if (data.Error) {
-        throw new Error(data.Error);
+        throw new APIError(data as OMDBError);
       } else {
         throw new Error('Something went wrong');
       }
@@ -82,7 +81,6 @@ export class MovieService {
       skip: pagination.skip,
       order: { id: 'ASC' },
     });
-    console.log(result);
     return result;
   }
 }

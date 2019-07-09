@@ -13,40 +13,40 @@ import { Type } from 'class-transformer';
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 
 class OMDBOptions {
-  @ApiModelProperty()
+  @ApiModelProperty({ example: 'tt0848228' })
   @ValidateIf(o => o.t === undefined)
   @IsString()
   @MinLength(1)
   i?: string;
 
-  @ApiModelPropertyOptional()
+  @ApiModelPropertyOptional({ example: 'Avengers' })
   @ValidateIf(o => o.i === undefined)
   @IsString()
   @MinLength(1)
   t?: string;
 
-  @ApiModelPropertyOptional()
+  @ApiModelPropertyOptional({ enum: ['movie', 'series', 'episode'] })
   @IsOptional()
   @IsIn(['movie', 'series', 'episode'])
   type?: string;
 
-  @ApiModelPropertyOptional()
+  @ApiModelPropertyOptional({ example: 2012 })
   @IsOptional()
   @IsInt()
   @IsPositive()
   y?: number;
 
-  @ApiModelPropertyOptional()
+  @ApiModelPropertyOptional({ enum: ['full', 'short'] })
   @IsOptional()
   @IsIn(['full', 'short'])
   plot?: string;
 
-  @ApiModelPropertyOptional()
+  @ApiModelPropertyOptional({ enum: ['json', 'xml'] })
   @IsOptional()
   @IsIn(['json', 'xml'])
   r?: string;
 
-  @ApiModelPropertyOptional()
+  @ApiModelPropertyOptional({ example: 1 })
   @IsOptional()
   v?: number;
 }

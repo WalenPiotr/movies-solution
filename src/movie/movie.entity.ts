@@ -14,9 +14,7 @@ export class OMDBMovie extends ResponsePartial {
   Title?: string;
 
   @Column()
-  @Type(() => Number)
-  @Transform(value => parseInt(value, 10), { toClassOnly: true })
-  Year?: number;
+  Year?: string;
 
   @Column()
   Rated?: string;
@@ -57,15 +55,11 @@ export class OMDBMovie extends ResponsePartial {
   @OneToMany(type => Rating, rating => rating.movie)
   Ratings?: Rating[];
 
-  @Column({ type: 'float' })
-  @Type(() => Number)
-  @Transform(value => parseFloat(value), { toClassOnly: true })
-  Metascore?: number;
+  @Column()
+  Metascore?: string;
 
-  @Column({ type: 'float' })
-  @Type(() => Number)
-  @Transform(value => parseFloat(value), { toClassOnly: true })
-  imdbRating?: number;
+  @Column()
+  imdbRating?: string;
 
   @Column()
   imdbVotes?: string;
@@ -77,9 +71,7 @@ export class OMDBMovie extends ResponsePartial {
   Type?: string;
 
   @Column()
-  @Type(() => Date)
-  @Transform(value => moment(value), { toClassOnly: true })
-  DVD?: Date;
+  DVD?: string;
 
   @Column()
   BoxOffice?: string;

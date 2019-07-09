@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeepPartial } from 'typeorm';
 import { ConfigService } from '../config/config.service';
 import { MockType } from '../lib/mocks/MockType';
 import { repositoryMockFactory } from '../lib/mocks/repository';
@@ -10,17 +10,19 @@ import { AddMovieDto } from './dto/add-movie.dto';
 import { ValidationError } from 'class-validator';
 import { HttpService } from '@nestjs/common';
 import { of } from 'rxjs';
-import { mock, when, spy, instance } from 'ts-mockito';
+import { mock, when, spy, instance, anything } from 'ts-mockito';
 import * as queryjoin from 'query-string';
 import * as urljoin from 'url-join';
 import { OMDB_API_URL } from '../constants';
+import { Rating } from '../rating/rating.entity';
 
 describe('MovieController - unit tests', () => {
-  let service: MovieService;
-  let repositoryMock: MockType<Repository<Movie>>;
   let testModule: TestingModule;
+  let service: MovieService;
+  let movieRepoMock = mock(Repository);
+  let ratingRepoMock = mock(Repository);
   let httpService = mock(HttpService);
-  let configService: ConfigService;
+  let configService = new ConfigService();
 
   beforeAll(async () => {
     testModule = await Test.createTestingModule({
@@ -28,7 +30,11 @@ describe('MovieController - unit tests', () => {
         MovieService,
         {
           provide: getRepositoryToken(Movie),
-          useFactory: repositoryMockFactory,
+          useValue: instance(movieRepoMock),
+        },
+        {
+          provide: getRepositoryToken(Rating),
+          useValue: instance(ratingRepoMock),
         },
         {
           provide: ConfigService,
@@ -37,13 +43,10 @@ describe('MovieController - unit tests', () => {
         { provide: HttpService, useValue: instance(httpService) },
       ],
     }).compile();
+    service = testModule.get<MovieService>(MovieService);
   });
 
-  beforeEach(async () => {
-    service = testModule.get<MovieService>(MovieService);
-    repositoryMock = testModule.get(getRepositoryToken(Movie));
-    configService = testModule.get<ConfigService>(ConfigService);
-  });
+  beforeEach(async () => {});
 
   describe('addMovie', () => {
     it('should fetch other movie details and save to application database.', async () => {
@@ -62,6 +65,7 @@ describe('MovieController - unit tests', () => {
           Title: 'The Avengers',
           imdbID: '123',
           Response: 'True',
+          Ratings: [{ Source: 'source', Value: 'value' }],
         },
         status: 200,
         statusText: 'OK',
@@ -70,14 +74,21 @@ describe('MovieController - unit tests', () => {
       };
       const observable = of(result);
       when(httpService.get(url)).thenReturn(observable);
+
+      when(movieRepoMock.create(anything())).thenCall(arg => arg);
+      when(movieRepoMock.save(anything())).thenCall(arg => arg);
+      when(ratingRepoMock.create(anything())).thenCall(arg => arg);
+      when(ratingRepoMock.save(anything())).thenCall(arg => arg);
+
       const input: AddMovieDto = { omdbOptions };
-      const expected: Partial<Movie> = {
+      const expected: DeepPartial<Movie> = {
         Title: 'The Avengers',
         imdbID: '123',
+        Ratings: [{ Source: 'source', Value: 'value' }],
         Response: true,
       };
       const value = await service.addMovie(input);
-      expect(value).toBe(expected);
+      expect(value).toEqual(expected);
     });
     it('should throw error if api returns with errors', async () => {
       const input: AddMovieDto = {
@@ -110,7 +121,8 @@ describe('MovieController - unit tests', () => {
   describe('getMovies', () => {
     it('should fetch list of all movies already present in application database.', async () => {
       const expected: Partial<Movie>[] = [{ Title: 'asfd' }];
-      repositoryMock.find.mockReturnValue(expected);
+      const args = {};
+      when(movieRepoMock.find(anything())).thenCall(arg => expected);
       const value = await service.getMovies({});
       expect(value).toBe(expected);
     });

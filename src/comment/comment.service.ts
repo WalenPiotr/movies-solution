@@ -23,10 +23,11 @@ export class CommentService {
     if (argsErrors.length > 0) {
       throw argsErrors;
     }
-    return this.commentRepository.create({
+    const comment = this.commentRepository.create({
       ...args.comment,
       movie: { id: args.movieId },
     });
+    return this.commentRepository.save(comment);
   }
 
   async getComments(args: GetCommentsDto): Promise<Comment[]> {

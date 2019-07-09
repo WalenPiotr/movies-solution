@@ -4,19 +4,19 @@ import { Type } from 'class-transformer';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 class CommentDto implements Partial<Comment> {
-  @ApiModelProperty()
-  @MinLength(5)
+  @ApiModelProperty({ example: 'Comment title' })
+  @MinLength(1)
   @MaxLength(25)
   title: string;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ example: 'Comment text' })
   @MinLength(1)
   @MaxLength(100)
   text: string;
 }
 
 export class AddCommentDto {
-  @ApiModelProperty()
+  @ApiModelProperty({ example: 1 })
   @IsInt()
   movieId: number;
 

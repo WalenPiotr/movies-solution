@@ -1,16 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository, DeepPartial } from 'typeorm';
+import { anything, instance, mock, when } from 'ts-mockito';
+import { DeepPartial, Repository } from 'typeorm';
 import { ConfigService } from '../config/config.service';
-import { MockType } from '../lib/mocks/MockType';
-import { repositoryMockFactory } from '../lib/mocks/repository';
 import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
 import { AddCommentDto } from './dto/add-comment.dto';
 
 describe('CommentController - unit tests', () => {
   let service: CommentService;
-  let repositoryMock: MockType<Repository<Comment>>;
+  let repositoryMock = mock(Repository);
   let testModule: TestingModule;
 
   beforeAll(async () => {
@@ -19,7 +18,7 @@ describe('CommentController - unit tests', () => {
         CommentService,
         {
           provide: getRepositoryToken(Comment),
-          useFactory: repositoryMockFactory,
+          useValue: instance(repositoryMock),
         },
         {
           provide: ConfigService,
@@ -31,7 +30,6 @@ describe('CommentController - unit tests', () => {
 
   beforeEach(async () => {
     service = testModule.get<CommentService>(CommentService);
-    repositoryMock = testModule.get(getRepositoryToken(Comment));
   });
 
   describe('addComment', () => {
@@ -48,25 +46,26 @@ describe('CommentController - unit tests', () => {
         title: 'nice title',
         text: 'not very long text but ok',
       };
-      repositoryMock.create.mockReturnValue(expected);
+      when(repositoryMock.create(anything())).thenCall(arg => arg);
+      when(repositoryMock.save(anything())).thenCall(arg => arg);
       const value = await service.addComment(input);
-      expect(value).toBe(expected);
+      expect(value).toEqual(expected);
     });
   });
 
   describe('getComments', () => {
     it('should fetch comments list', async () => {
       const input = {};
-      const expected: DeepPartial<Comment>[] = [
+      const expected: Array<DeepPartial<Comment>> = [
         {
           movie: { id: 1 },
           title: 'nice title',
           text: 'not very long text but ok',
         },
       ];
-      repositoryMock.find.mockReturnValue(expected);
+      when(repositoryMock.find(anything())).thenCall(arg => expected);
       const value = await service.getComments(input);
-      expect(value).toBe(expected);
+      expect(value).toEqual(expected);
     });
   });
 });

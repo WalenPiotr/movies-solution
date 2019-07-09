@@ -4,6 +4,10 @@ import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
 import { AddCommentDto } from './dto/add-comment.dto';
 import { GetCommentsDto } from './dto/get-comments.dto';
+import { plainToClass } from 'class-transformer';
+import { PaginationDto } from 'src/lib/pagination/pagination.dto';
+import { ApiImplicitQuery } from '@nestjs/swagger';
+import { formatError } from '../formatError';
 
 @Controller('comment')
 export class CommentController {
@@ -11,19 +15,35 @@ export class CommentController {
 
   @Post()
   addMovie(@Body() addCommentDto: AddCommentDto): Promise<Comment> {
-    return this.appService.addComment(addCommentDto);
+    try {
+      return this.appService.addComment(addCommentDto);
+    } catch (e) {
+      throw formatError(e);
+    }
   }
 
+  @ApiImplicitQuery({
+    name: 'skip',
+    required: false,
+    type: Number,
+  })
+  @ApiImplicitQuery({
+    name: 'take',
+    required: false,
+    type: Number,
+  })
   @Get()
   getMovies(
-    @Query('take') take: string,
-    @Query('skip') skip: string,
+    @Query('skip') skip: number = 0,
+    @Query('take') take: number = 25,
   ): Promise<Comment[]> {
-    return this.appService.getComments({
-      pagination: {
-        take: parseInt(take, 10),
-        skip: parseInt(skip, 10),
-      },
-    });
+    try {
+      const pagination = plainToClass(PaginationDto, { take, skip });
+      return this.appService.getComments({
+        pagination,
+      });
+    } catch (e) {
+      throw formatError(e);
+    }
   }
 }

@@ -1,9 +1,23 @@
-import { Body, Controller, Post, Get, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Param,
+  Query,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { Movie } from './movie.entity';
 import { MovieService } from './movie.service';
 import { AddMovieDto } from './dto/add-movie.dto';
 import { GetMoviesDto } from './dto/get-movies.dto';
-import { ApiImplicitParam } from '@nestjs/swagger';
+import { ApiImplicitParam, ApiImplicitQuery } from '@nestjs/swagger';
+import { PaginationDto } from 'src/lib/pagination/pagination.dto';
+import { plainToClass } from 'class-transformer';
+import { APIError } from '../errors/APIError';
+import { ValidationError } from 'class-validator';
+import { formatError } from '../formatError';
 
 @Controller('movies')
 export class MovieController {
@@ -11,16 +25,39 @@ export class MovieController {
 
   @Post()
   addMovie(@Body() addMovieDto: AddMovieDto): Promise<Movie> {
-    return this.appService.addMovie(addMovieDto);
+    try {
+      return this.appService.addMovie(addMovieDto);
+    } catch (e) {
+      throw formatError(e);
+    }
   }
 
+  @ApiImplicitQuery({
+    name: 'skip',
+    description: 'min=0, default=0',
+    required: false,
+    type: Number,
+  })
+  @ApiImplicitQuery({
+    name: 'take',
+    description: 'min=0, max=50, default=25',
+    required: false,
+    type: Number,
+  })
   @Get()
-  getMovies(
-    @Query('take') take: string,
-    @Query('skip') skip: string,
+  async getMovies(
+    @Query('skip') skip: number = 0,
+    @Query('take') take: number = 25,
   ): Promise<Movie[]> {
-    return this.appService.getMovies({
-      pagination: { take: parseInt(take, 10), skip: parseInt(skip, 10) },
-    });
+    try {
+      return await this.appService.getMovies({
+        pagination: {
+          take,
+          skip,
+        },
+      });
+    } catch (e) {
+      throw formatError(e);
+    }
   }
 }
