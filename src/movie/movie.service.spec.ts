@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import * as queryjoin from 'query-string';
 import { of } from 'rxjs';
-import { anything, instance, mock, when } from 'ts-mockito';
+import { anything, instance, mock, when, deepEqual } from 'ts-mockito';
 import { DeepPartial, Repository } from 'typeorm';
 import * as urljoin from 'url-join';
 import { ConfigService } from '../config/config.service';
@@ -12,6 +12,7 @@ import { Rating } from '../rating/rating.entity';
 import { AddMovieDto } from './dto/add-movie.dto';
 import { Movie } from './movie.entity';
 import { MovieService } from './movie.service';
+import { ValidationError } from 'class-validator';
 
 describe('MovieController - unit tests', () => {
   let testModule: TestingModule;
@@ -71,12 +72,10 @@ describe('MovieController - unit tests', () => {
       };
       const observable = of(result);
       when(httpService.get(url)).thenReturn(observable);
-
       when(movieRepoMock.create(anything())).thenCall(arg => arg);
       when(movieRepoMock.save(anything())).thenCall(arg => arg);
       when(ratingRepoMock.create(anything())).thenCall(arg => arg);
       when(ratingRepoMock.save(anything())).thenCall(arg => arg);
-
       const input: AddMovieDto = { omdbOptions };
       const expected: DeepPartial<Movie> = {
         Title: 'The Avengers',
@@ -116,12 +115,41 @@ describe('MovieController - unit tests', () => {
   });
 
   describe('getMovies', () => {
-    it('should fetch list of all movies already present in application database.', async () => {
+    it(`should fetch list of movies already present in application
+        database.`, async () => {
       const expected: Partial<Movie>[] = [{ Title: 'asfd' }];
-      const args = {};
-      when(movieRepoMock.find(anything())).thenCall(arg => expected);
+      when(
+        movieRepoMock.find(
+          deepEqual({ take: 25, skip: 0, order: { id: 'ASC' } }),
+        ),
+      ).thenResolve(expected);
       const value = await service.getMovies({});
-      expect(value).toBe(expected);
+      expect(value).toEqual(expected);
+    });
+    it(`should fetch list of movies already present in application database.
+        (with custom pagination)`, async () => {
+      const expected: Partial<Movie>[] = [{ Title: 'asfd' }];
+      when(
+        movieRepoMock.find(
+          deepEqual({ take: 40, skip: 0, order: { id: 'ASC' } }),
+        ),
+      ).thenResolve(expected);
+      const value = await service.getMovies({
+        pagination: { take: 40, skip: 0 },
+      });
+      expect(value).toEqual(expected);
+    });
+    it(`should fail if pagination params are out of valid range`, async () => {
+      let error: Error;
+      try {
+        await service.getMovies({
+          pagination: { take: 80, skip: 0 },
+        });
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeInstanceOf(Array);
+      expect(error[0]).toBeInstanceOf(ValidationError);
     });
   });
 });

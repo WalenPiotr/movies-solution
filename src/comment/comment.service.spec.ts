@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { anything, instance, mock, when } from 'ts-mockito';
+import { anything, instance, mock, when, deepEqual } from 'ts-mockito';
 import { DeepPartial, Repository } from 'typeorm';
 import { ConfigService } from '../config/config.service';
 import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
 import { AddCommentDto } from './dto/add-comment.dto';
+import { ValidationError } from 'class-validator';
 
 describe('CommentController - unit tests', () => {
   let service: CommentService;
@@ -63,9 +64,31 @@ describe('CommentController - unit tests', () => {
           text: 'not very long text but ok',
         },
       ];
-      when(repositoryMock.find(anything())).thenCall(arg => expected);
+      when(
+        repositoryMock.find(
+          deepEqual({
+            take: 25,
+            skip: 0,
+            order: {
+              id: 'ASC',
+            },
+          }),
+        ),
+      ).thenResolve(expected);
       const value = await service.getComments(input);
       expect(value).toEqual(expected);
+    });
+    it(`should fail if pagination params are out of valid range`, async () => {
+      let error: Error;
+      try {
+        await service.getComments({
+          pagination: { take: 80, skip: 0 },
+        });
+      } catch (e) {
+        error = e;
+      }
+      expect(error).toBeInstanceOf(Array);
+      expect(error[0]).toBeInstanceOf(ValidationError);
     });
   });
 });
