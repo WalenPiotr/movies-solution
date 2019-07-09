@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiImplicitQuery } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
-import { PaginationDto } from 'src/lib/pagination/pagination.dto';
+import { PaginationDto } from '../lib/pagination/pagination.dto';
 import { formatError } from '../formatError';
 import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
