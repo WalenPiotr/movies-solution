@@ -117,7 +117,7 @@ describe('MovieController - unit tests', () => {
   describe('getMovies', () => {
     it(`should fetch list of movies already present in application
         database.`, async () => {
-      const expected: Partial<Movie>[] = [{ Title: 'asfd' }];
+      const expected: Array<Partial<Movie>> = [{ Title: 'asfd' }];
       when(
         movieRepoMock.find(
           deepEqual({ take: 25, skip: 0, order: { imdbID: 'ASC' } }),
@@ -128,7 +128,7 @@ describe('MovieController - unit tests', () => {
     });
     it(`should fetch list of movies already present in application database.
         (with custom pagination)`, async () => {
-      const expected: Partial<Movie>[] = [{ Title: 'asfd' }];
+      const expected: Array<Partial<Movie>> = [{ Title: 'asfd' }];
       when(
         movieRepoMock.find(
           deepEqual({ take: 40, skip: 0, order: { imdbID: 'ASC' } }),
