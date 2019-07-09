@@ -78,6 +78,6 @@ POSTGRES_DB=pg-db
 
 App was deployed using Docker and DigitalOcean servers
 
-To view live demo of this app please visit http://46.101.246.218:3000/
+To view live demo of this app please visit http://46.101.246.218:3000/movies
 
 To view interactive docs (swagger ui) of this app visit http://46.101.246.218:3000/api/
