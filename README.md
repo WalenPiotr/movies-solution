@@ -8,6 +8,14 @@ In addition to base requirements added:
 
 - take/skip pagination on GET requests
 
+## Live demo
+
+App was deployed using Docker and DigitalOcean servers
+
+To view live demo of this app please visit http://46.101.246.218:3000/movies
+
+To view interactive docs (swagger ui) of this app visit http://46.101.246.218:3000/api/
+
 ## How to build this app?
 
 ### Build it yourself and setup your own db
@@ -77,11 +85,3 @@ POSTGRES_USER=pg-username
 POSTGRES_PASSWORD=pg-password
 POSTGRES_DB=pg-db
 ```
-
-## Live demo
-
-App was deployed using Docker and DigitalOcean servers
-
-To view live demo of this app please visit http://46.101.246.218:3000/movies
-
-To view interactive docs (swagger ui) of this app visit http://46.101.246.218:3000/api/
