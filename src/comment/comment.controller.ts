@@ -7,7 +7,7 @@ import { Comment } from './comment.entity';
 import { CommentService } from './comment.service';
 import { AddCommentDto } from './dto/add-comment.dto';
 
-@Controller('comment')
+@Controller('comments')
 export class CommentController {
   constructor(private readonly appService: CommentService) {}
 
