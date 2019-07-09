@@ -1,5 +1,11 @@
 import { Transform } from 'class-transformer';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  PrimaryColumn,
+} from 'typeorm';
 import { Comment } from '../comment/comment.entity';
 import { Rating } from '../rating/rating.entity';
 
@@ -63,7 +69,7 @@ export class OMDBMovie extends ResponsePartial {
   @Column()
   imdbVotes?: string;
 
-  @Column()
+  @PrimaryColumn()
   imdbID?: string;
 
   @Column()
@@ -90,8 +96,8 @@ export type OMDBPayload = Partial<OMDBError> & Partial<OMDBMovie>;
 
 @Entity()
 export class Movie extends OMDBMovie {
-  @PrimaryGeneratedColumn()
-  id: number;
+  // @PrimaryGeneratedColumn()
+  // id: number;
 
   @OneToMany(type => Comment, comment => comment.movie)
   comments?: Comment[];

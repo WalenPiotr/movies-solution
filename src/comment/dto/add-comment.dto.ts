@@ -16,9 +16,8 @@ class CommentDto implements Partial<Comment> {
 }
 
 export class AddCommentDto {
-  @ApiModelProperty({ example: 1 })
-  @IsInt()
-  movieId: number;
+  @ApiModelProperty({ example: 'tt0848228' })
+  movieId: string;
 
   @ApiModelProperty()
   @ValidateNested()

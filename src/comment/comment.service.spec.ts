@@ -36,14 +36,14 @@ describe('CommentController - unit tests', () => {
   describe('addComment', () => {
     it('should add comment to existing movie', async () => {
       const input: AddCommentDto = {
-        movieId: 1,
+        movieId: 'tt1111',
         comment: {
           title: 'nice title',
           text: 'not very long text but ok',
         },
       };
       const expected: DeepPartial<Comment> = {
-        movie: { id: 1 },
+        movie: { imdbID: 'tt1111' },
         title: 'nice title',
         text: 'not very long text but ok',
       };
@@ -59,7 +59,7 @@ describe('CommentController - unit tests', () => {
       const input = {};
       const expected: Array<DeepPartial<Comment>> = [
         {
-          movie: { id: 1 },
+          movie: { imdbID: 'tt111111' },
           title: 'nice title',
           text: 'not very long text but ok',
         },

@@ -25,7 +25,7 @@ export class CommentService {
     }
     const comment = this.commentRepository.create({
       ...args.comment,
-      movie: { id: args.movieId },
+      movie: { imdbID: args.movieId },
     });
     return this.commentRepository.save(comment);
   }

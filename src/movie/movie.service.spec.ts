@@ -120,7 +120,7 @@ describe('MovieController - unit tests', () => {
       const expected: Partial<Movie>[] = [{ Title: 'asfd' }];
       when(
         movieRepoMock.find(
-          deepEqual({ take: 25, skip: 0, order: { id: 'ASC' } }),
+          deepEqual({ take: 25, skip: 0, order: { imdbID: 'ASC' } }),
         ),
       ).thenResolve(expected);
       const value = await service.getMovies({});
@@ -131,7 +131,7 @@ describe('MovieController - unit tests', () => {
       const expected: Partial<Movie>[] = [{ Title: 'asfd' }];
       when(
         movieRepoMock.find(
-          deepEqual({ take: 40, skip: 0, order: { id: 'ASC' } }),
+          deepEqual({ take: 40, skip: 0, order: { imdbID: 'ASC' } }),
         ),
       ).thenResolve(expected);
       const value = await service.getMovies({

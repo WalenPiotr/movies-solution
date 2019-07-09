@@ -78,7 +78,7 @@ export class MovieService {
     const result = await this.movieRepository.find({
       take: pagination.take,
       skip: pagination.skip,
-      order: { id: 'ASC' },
+      order: { imdbID: 'ASC' },
     });
     return result;
   }
