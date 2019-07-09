@@ -55,6 +55,7 @@ describe('MovieController - unit tests', () => {
         '?' +
         queryjoin.stringify({
           apikey: configService.apiKey,
+          plot: 'full',
           ...omdbOptions,
         });
       const url = urljoin(OMDB_API_URL, queryString);
@@ -76,7 +77,7 @@ describe('MovieController - unit tests', () => {
       when(movieRepoMock.save(anything())).thenCall(arg => arg);
       when(ratingRepoMock.create(anything())).thenCall(arg => arg);
       when(ratingRepoMock.save(anything())).thenCall(arg => arg);
-      const input: AddMovieDto = { omdbOptions };
+      const input: AddMovieDto = { ...omdbOptions };
       const expected: DeepPartial<Movie> = {
         Title: 'The Avengers',
         imdbID: '123',
@@ -88,9 +89,7 @@ describe('MovieController - unit tests', () => {
     });
     it('should throw error if api returns with errors', async () => {
       const input: AddMovieDto = {
-        omdbOptions: {
-          i: 'tt0848228aa',
-        },
+        i: 'tt0848228aa',
       };
       let error: Error;
       try {
@@ -101,9 +100,7 @@ describe('MovieController - unit tests', () => {
       expect(error).toBeDefined();
     });
     it('should fail if no omdb id or title is provided', async () => {
-      const input: AddMovieDto = {
-        omdbOptions: {},
-      };
+      const input: AddMovieDto = {};
       let error;
       try {
         await service.addMovie(input);

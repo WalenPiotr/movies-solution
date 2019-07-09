@@ -40,11 +40,13 @@ export class MovieService {
     if (argsErrors.length > 0) {
       throw argsErrors;
     }
+
     const queryString =
       '?' +
       queryjoin.stringify({
         apikey: this.apiKey,
-        ...args.omdbOptions,
+        plot: 'full',
+        ...args,
       });
     const url = urljoin(OMDB_API_URL, queryString);
     const response = await this.httpService.get<OMDBPayload>(url).toPromise();

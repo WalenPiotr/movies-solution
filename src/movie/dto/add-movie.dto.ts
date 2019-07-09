@@ -11,7 +11,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-class OMDBOptions {
+export class AddMovieDto {
   @ApiModelProperty({ example: 'tt0848228' })
   @ValidateIf(o => o.t === undefined)
   @IsString()
@@ -34,25 +34,4 @@ class OMDBOptions {
   @IsInt()
   @IsPositive()
   y?: number;
-
-  @ApiModelPropertyOptional({ enum: ['full', 'short'] })
-  @IsOptional()
-  @IsIn(['full', 'short'])
-  plot?: string;
-
-  @ApiModelPropertyOptional({ enum: ['json', 'xml'] })
-  @IsOptional()
-  @IsIn(['json', 'xml'])
-  r?: string;
-
-  @ApiModelPropertyOptional({ example: 1 })
-  @IsOptional()
-  v?: number;
-}
-
-export class AddMovieDto {
-  @ValidateNested()
-  @Type(() => OMDBOptions)
-  @ApiModelProperty()
-  omdbOptions: OMDBOptions;
 }
