@@ -28,6 +28,7 @@ DB_PORT=5432
 ### Or use launch app using hosted image on dockerhub:
 
 https://hub.docker.com/r/walenpiotr/movie-solution
+
 To launch app you can use docker-compose and following docker-compose.yml config
 
 ```
@@ -67,12 +68,16 @@ DB_PORT=5432
 
 #### Example db.env
 
+```
 POSTGRES_USER=pg-username
 POSTGRES_PASSWORD=pg-password
 POSTGRES_DB=pg-db
+```
 
 ## Live demo
 
 App was deployed using Docker and DigitalOcean servers
+
 To view live demo of this app please visit http://46.101.246.218:3000/
+
 To view interactive docs (swagger ui) of this app visit http://46.101.246.218:3000/api/
