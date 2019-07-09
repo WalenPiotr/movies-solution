@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { APIError } from './errors/APIError';
 import { ValidationError } from 'class-validator';
+import { APIError } from './errors/APIError';
 
 export const formatError = (err: any): HttpException => {
   if (err instanceof APIError) {

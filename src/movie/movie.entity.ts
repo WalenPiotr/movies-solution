@@ -1,5 +1,4 @@
-import { Transform, Type } from 'class-transformer';
-import * as moment from 'moment';
+import { Transform } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Comment } from '../comment/comment.entity';
 import { Rating } from '../rating/rating.entity';

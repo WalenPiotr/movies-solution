@@ -1,3 +1,5 @@
+import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsIn,
   IsInt,
@@ -5,12 +7,9 @@ import {
   IsPositive,
   IsString,
   MinLength,
-  ValidateNested,
   ValidateIf,
+  ValidateNested,
 } from 'class-validator';
-import { OneRequired } from '../../lib/validators/oneRequired/oneRequired';
-import { Type } from 'class-transformer';
-import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 
 class OMDBOptions {
   @ApiModelProperty({ example: 'tt0848228' })

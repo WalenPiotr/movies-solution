@@ -1,6 +1,6 @@
-import { ValidateNested, IsOptional } from 'class-validator';
-import { PaginationDto } from '../../lib/pagination/pagination.dto';
 import { Type } from 'class-transformer';
+import { IsOptional, ValidateNested } from 'class-validator';
+import { PaginationDto } from '../../lib/pagination/pagination.dto';
 
 export class GetMoviesDto {
   @IsOptional()

@@ -1,9 +1,9 @@
 import {
   BaseEntity,
-  Entity,
   Column,
-  PrimaryGeneratedColumn,
+  Entity,
   ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Movie } from '../movie/movie.entity';
 

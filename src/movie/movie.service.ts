@@ -1,19 +1,18 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import { validate, Validate, ValidateIf } from 'class-validator';
-import fetch from 'node-fetch';
+import { validate } from 'class-validator';
 import * as queryjoin from 'query-string';
 import { Repository } from 'typeorm';
 import * as urljoin from 'url-join';
 import { ConfigService } from '../config/config.service';
 import { OMDB_API_URL } from '../constants';
-import { Movie, OMDBMovie, OMDBPayload, OMDBError } from './movie.entity';
-import { AddMovieDto } from './dto/add-movie.dto';
-import { GetMoviesDto } from './dto/get-movies.dto';
+import { APIError } from '../errors/APIError';
 import { PaginationDto } from '../lib/pagination/pagination.dto';
 import { Rating } from '../rating/rating.entity';
-import { APIError } from '../errors/APIError';
+import { AddMovieDto } from './dto/add-movie.dto';
+import { GetMoviesDto } from './dto/get-movies.dto';
+import { Movie, OMDBError, OMDBMovie, OMDBPayload } from './movie.entity';
 
 @Injectable()
 export class MovieService {

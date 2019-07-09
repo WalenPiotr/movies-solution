@@ -1,23 +1,9 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Get,
-  Param,
-  Query,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { ApiImplicitQuery } from '@nestjs/swagger';
+import { formatError } from '../formatError';
+import { AddMovieDto } from './dto/add-movie.dto';
 import { Movie } from './movie.entity';
 import { MovieService } from './movie.service';
-import { AddMovieDto } from './dto/add-movie.dto';
-import { GetMoviesDto } from './dto/get-movies.dto';
-import { ApiImplicitParam, ApiImplicitQuery } from '@nestjs/swagger';
-import { PaginationDto } from 'src/lib/pagination/pagination.dto';
-import { plainToClass } from 'class-transformer';
-import { APIError } from '../errors/APIError';
-import { ValidationError } from 'class-validator';
-import { formatError } from '../formatError';
 
 @Controller('movies')
 export class MovieController {

@@ -1,20 +1,17 @@
+import { HttpService } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository, DeepPartial } from 'typeorm';
-import { ConfigService } from '../config/config.service';
-import { MockType } from '../lib/mocks/MockType';
-import { repositoryMockFactory } from '../lib/mocks/repository';
-import { Movie } from './movie.entity';
-import { MovieService } from './movie.service';
-import { AddMovieDto } from './dto/add-movie.dto';
-import { ValidationError } from 'class-validator';
-import { HttpService } from '@nestjs/common';
-import { of } from 'rxjs';
-import { mock, when, spy, instance, anything } from 'ts-mockito';
 import * as queryjoin from 'query-string';
+import { of } from 'rxjs';
+import { anything, instance, mock, when } from 'ts-mockito';
+import { DeepPartial, Repository } from 'typeorm';
 import * as urljoin from 'url-join';
+import { ConfigService } from '../config/config.service';
 import { OMDB_API_URL } from '../constants';
 import { Rating } from '../rating/rating.entity';
+import { AddMovieDto } from './dto/add-movie.dto';
+import { Movie } from './movie.entity';
+import { MovieService } from './movie.service';
 
 describe('MovieController - unit tests', () => {
   let testModule: TestingModule;
