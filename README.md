@@ -10,7 +10,7 @@ Solution for recruitment task
 
 1. Setup database (postgreSQL)
 2. Git clone this repo
-3. Provide env variables in development.env file placed in root of this repo
+3. Provide env variables in development.env file placed in root of this repo (with OMDB API key and database config)
 
 #### Example development.env
 
@@ -53,7 +53,7 @@ services:
 
 ```
 
-Make sure that you provide appropriate env files for containers placed in .env directory.
+Make sure that you provide appropriate env files for containers placed in .env directory (with OMDB API key and database config).
 
 #### Example service.env
 
