@@ -4,6 +4,10 @@ REST API, a basic movie database interacting with external API (http://www.omdba
 
 Solution for recruitment task
 
+In addition to base requirements added:
+
+- take/skip pagination on GET requests
+
 ## How to build this app?
 
 ### Build it yourself and setup your own db
