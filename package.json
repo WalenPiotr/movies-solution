@@ -38,7 +38,7 @@
     "rxjs": "6.4.0",
     "swagger-ui-express": "^4.0.7",
     "ts-mockito": "^2.3.1",
-    "typeorm": "^0.2.18",
+    "typeorm": "^0.2.25",
     "url-join": "^4.0.1"
   },
   "devDependencies": {
